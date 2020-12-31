@@ -1,0 +1,19 @@
+{
+  "title": "抓包代理利器：mitmproxy",
+  "description": "介绍主要用于抓包领域的代理工具mitmproxy，尤其是常用的命令行版的mitmdump。先对mitmproxy概述，再介绍mitmdump的下载和安装。包括Mac和Win中如何安装和常见问题。接下来介绍如何使用mitmdump，包括核心的通用逻辑，即先电脑端启动mitmdump代理，再去移动端初始阿虎安装mitmproxy的根证书ssl代理证书文件，其中总结了各种iOS和安卓手机在安装根证书时候的坑和问题及解决办法。再去介绍如何给移动端中WiFi去设置代理。总结了常见的问题，比如No module named yaml、traffic is not passing through mitmproxy等等。还有其他方面，比如代码中调用控制mitmdump的运行、win中如何给mitmdump的python打包成exe。最后附上help语法供需要时查阅。",
+  "pluginsConfig": {
+    "github-buttons": {
+      "buttons": [
+        {
+          "repo": "crawler_proxy_tool_mimproxy"
+        }
+      ]
+    },
+    "sitemap-general": {
+      "prefix": "https://book.crifan.com/gitbook/crawler_proxy_tool_mimproxy/website/"
+    },
+    "toolbar-button": {
+      "url": "http://book.crifan.com/books/crawler_proxy_tool_mimproxy/pdf/crawler_proxy_tool_mimproxy.pdf"
+    }
+  }
+}

@@ -102,7 +102,6 @@ def killProcess(pid):
     return isKillOk, errCode
 ```
 
-
 基本完成了想要的功能：
 
 * 在启动任务前，启动mitmproxy
@@ -112,12 +111,170 @@ def killProcess(pid):
 
 ## 后续优化版本
 
-```python
+全局定义：
 
+```python
 MitmdumpPortBase = 8080
 curDevId = 1
 RunProxyShellFilename = "runProxy.sh"
+```
 
+### 生成mitmproxy命令
+
+```python
+
+#---------- generate start service command ----------
+
+def generateMitmproxyStartCommand(curDevId):
+    curMitmdumpPort = MitmdumpPortBase + int(curDevId)
+    # mitmproxyStartCommand = "mitmdump -p %d -s middleware/Save%d.py" % (curMitmdumpPort, curDevId)
+    mitmproxyStartCommand = "mitmdump -k -p %d -s middleware/Save%d.py" % (curMitmdumpPort, curDevId)
+    logging.debug("mitmproxyStartCommand=%s", mitmproxyStartCommand)
+    # mitmdump -k -p 8081 -s middleware/Save1.py
+    mitmproxyCommandList = [
+        # "cd /Users/limao/dev/xxx/crawler/appAutoCrawler/AppCrawler",
+        "cd %s" % AppCralwerFolder,
+        "pwd",
+        mitmproxyStartCommand,
+    ]
+    logging.debug("mitmproxyCommandList=%s", mitmproxyCommandList)
+    # ['cd /Users/limao/dev/xxx/crawler/appAutoCrawler/AppCrawler', 'pwd', 'mitmdump -k -p 8081 -s middleware/Save1.py']
+    # mitmproxyCommandStr = ";".join(mitmproxyCommandList)
+    # mitmproxyCommandStr = "; ".join(mitmproxyCommandList)
+    mitmproxyCommandStr = "\n".join(mitmproxyCommandList)
+    # cd /Users/limao/dev/xxx/crawler/appAutoCrawler/AppCrawler
+    # pwd
+    # mitmdump -k -p 8081 -s middleware/Save1.py
+    logging.debug("mitmproxyCommandStr=%s", mitmproxyCommandStr)
+    return mitmproxyCommandStr
+```
+
+调用：
+
+```python
+mitmproxyCmdStr = generateMitmproxyStartCommand("1")
+```
+
+和此处的：
+
+```python
+#---------- generate shell file ----------
+def generateRunProxyShell(devId, taskId):
+    mitmproxyCmdStr = generateMitmproxyStartCommand(devId)
+    logging.debug("mitmproxyCmdStr=%s", mitmproxyCmdStr)
+    return generateShellFile(mitmproxyCmdStr, RunProxyShellFilename, taskId)
+```
+
+### 停止当前正在运行的mitmdump
+
+```python
+def stopExistingMitmproxy(curDevId):
+    logging.debug("curDevId=%s", curDevId)
+    curDevIdInt = int(curDevId)
+    isCheckOk, isRunning, mitmdumpInfoList = detectMitmdumpStatus()
+    logging.debug("isCheckOk=%s, isRunning=%s, mitmdumpInfoList=%s", isCheckOk, isRunning, mitmdumpInfoList)
+
+    if isCheckOk and isRunning:
+        foundExistedDevId = False
+        existedPidInt = None
+
+        for eachMitmdumpInfo in mitmdumpInfoList:
+            eachDevIdStr = eachMitmdumpInfo["devId"]
+            eachDevIdInt = int(eachDevIdStr)
+            if eachDevIdInt == curDevIdInt:
+                foundExistedDevId = True
+                existedPidStr = eachMitmdumpInfo["pid"]
+                existedPidInt = int(existedPidStr)
+                break
+
+        if foundExistedDevId:
+            killOK, errCode = utils.killProcess(existedPidInt)
+            logging.debug("killOK=%s, errCode=%s", killOK, errCode)
+
+            logging.info("%s to stopped mitmproxy", killOK)
+```
+
+调用：
+
+```python
+devId="1"
+stopExistingMitmproxy(devId)
+```
+
+### 确保mitmdump已运行
+
+```python
+CheckServiceRunningInterval = 2.0
+
+def makesureProxyingRunning(devId, taskId):
+    def checkProxyStatus():
+        isCheckOk, isRunning, infoList = detectMitmdumpStatus()
+        return isCheckOk and isRunning
+
+    def startCurTaskProxy():
+        startTaskProxy(devId, taskId)
+
+    makesureServiceRunning(checkProxyStatus, startCurTaskProxy, "Proxy”)
+
+def detectMitmdumpStatus():
+    # crifanli 9428 0.0 0.6 4341956 19792 s006 S+ 9:16上午 0:23.78 /Users/crifanli/.pyenv/versions/3.8.3/bin/python3.8 /Users/crifanli/.pyenv/versions/3.8.3/bin/mitmdump -k -p 8081 -s middleware/Save1.py
+    # crifanli 10982 0.0 0.0 4268032 776 s005 S+ 1:51下午 0:00.00 grep mitmdump
+    # crifanli 10980 0.0 0.0 4278852 1116 s005 S+ 1:51下午 0:00.01 /bin/sh -c ps aux | grep mitmdump
+    # mitmdumpP = "^\s*(?P<username>\w+)\s+(?P<pid>\d+)\s+.+?mitmdump\s+-p\s+(?P<port>\d+)\s+-s\s+(?P<scriptFile>middleware/Save(?P<devId>\d+)\.py)\s*$"
+    mitmdumpP = "^\s*(?P<username>\w+)\s+(?P<pid>\d+)\s+.+?mitmdump\s+(-k\s+)?-p\s+(?P<port>\d+)\s+-s\s+(?P<scriptFile>middleware/Save(?P<devId>\d+)\.py)\s*$"
+    return utils.grepProcessStatus("mitmdump", mitmdumpP)
+
+def makesureServiceRunning(checkStatusCallback, startServiceCallback, serviceName=""):
+    isRunning = False
+    while not isRunning:
+        # isRunning = eval(checkStatusCallback)
+        isRunning = checkStatusCallback()
+        logging.debug("isRunning=%s", isRunning)
+        if isRunning:
+            break
+        else:
+            logging.info("%s not running, try to start", serviceName)
+            # eval(startServiceCallback)
+            startServiceCallback()
+
+        logging.info("Wait %d seconds", CheckServiceRunningInterval)
+        time.sleep(CheckServiceRunningInterval)
+
+    logging.info("%s is running", serviceName)
+```
+
+### Mac中调用Terminal终端去启动mitmdump
+
+```python
+# CurFilePath = __file__
+CurFilePath = os.path.abspath(__file__)
+print("CurFilePath=%s" % CurFilePath)
+PlatformIntegrationFolder = os.path.dirname(CurFilePath)
+print("PlatformIntegrationFolder=%s" % PlatformIntegrationFolder)
+
+OutputFolderName = "output"
+OutputRootFolder = os.path.join(PlatformIntegrationFolder, OutputFolderName)
+
+def getTaskRootFolder(taskId):
+    taskIdStr = str(taskId)
+    taskFolder = os.path.join(OutputRootFolder, "tasks", taskIdStr)
+    return taskFolder
+
+def getTaskShellFolder(taskId):
+    taskRootFolder = getTaskRootFolder(taskId)
+    taskShellFolder = os.path.join(taskRootFolder, "shell")
+    return taskShellFolder
+
+def startTaskProxy(devId, taskId):
+    logging.info("Start proxy for: devId=%s, taskId=%s", devId, taskId)
+    proxyShellFile = generateRunProxyShell(devId, taskId)
+    logging.debug("proxyShellFile=%s", proxyShellFile)
+    utils.launchTerminalRunShellCommand(proxyShellFile)
+
+def generateRunProxyShell(devId, taskId):
+    mitmproxyCmdStr = generateMitmproxyStartCommand(devId)
+    logging.debug("mitmproxyCmdStr=%s", mitmproxyCmdStr)
+    return generateShellFile(mitmproxyCmdStr, RunProxyShellFilename, taskId)
 
 def generateShellFile(fileContentStr, shellFilename, taskId=None):
     """Generate shell file, which is used to run command
@@ -144,78 +301,16 @@ def generateShellFile(fileContentStr, shellFilename, taskId=None):
     utils.chmodAddX(shellFullPath, isOnlySelf=False)
     # utils.chmodAddX(respShellFullPath)
     logging.debug("respShellFullPath=%s", respShellFullPath)
-    # /Users/limao/dev/xxx/crawler/appAutoCrawler/AppCrawler/platformIntegration/output/tasks/5e9552d1c5c2eb3ccdf777bc/shell/runProxy.sh
+    # /Users/limao/dev/xx/crawler/appAutoCrawler/AppCrawler/platformIntegration/output/tasks/5e9552d1c5c2eb3ccdf777bc/shell/runProxy.sh
     return respShellFullPath
-
-#---------- generate start service command ----------
-
-def generateMitmproxyStartCommand(curDevId):
-    curMitmdumpPort = MitmdumpPortBase + int(curDevId)
-    # mitmproxyStartCommand = "mitmdump -p %d -s middleware/Save%d.py" % (curMitmdumpPort, curDevId)
-    mitmproxyStartCommand = "mitmdump -k -p %d -s middleware/Save%d.py" % (curMitmdumpPort, curDevId)
-    logging.debug("mitmproxyStartCommand=%s", mitmproxyStartCommand)
-    # mitmdump -k -p 8081 -s middleware/Save1.py
-    mitmproxyCommandList = [
-        # "cd /Users/limao/dev/xxx/crawler/appAutoCrawler/AppCrawler",
-        "cd %s" % AppCralwerFolder,
-        "pwd",
-        mitmproxyStartCommand,
-    ]
-    logging.debug("mitmproxyCommandList=%s", mitmproxyCommandList)
-    # ['cd /Users/limao/dev/xxx/crawler/appAutoCrawler/AppCrawler', 'pwd', 'mitmdump -k -p 8081 -s middleware/Save1.py']
-    # mitmproxyCommandStr = ";".join(mitmproxyCommandList)
-    # mitmproxyCommandStr = "; ".join(mitmproxyCommandList)
-    mitmproxyCommandStr = "\n".join(mitmproxyCommandList)
-    # cd /Users/limao/dev/xxx/crawler/appAutoCrawler/AppCrawler
-    # pwd
-    # mitmdump -k -p 8081 -s middleware/Save1.py
-    logging.debug("mitmproxyCommandStr=%s", mitmproxyCommandStr)
-    return mitmproxyCommandStr
-
-#---------- generate shell file ----------
-
-def generateRunProxyShell(devId, taskId):
-    mitmproxyCmdStr = generateMitmproxyStartCommand(devId)
-    logging.debug("mitmproxyCmdStr=%s", mitmproxyCmdStr)
-    return generateShellFile(mitmproxyCmdStr, RunProxyShellFilename, taskId)
-
-#---------- detect service status ----------
-
-def detectMitmdumpStatus():
-    # crifanli 9428 0.0 0.6 4341956 19792 s006 S+ 9:16上午 0:23.78 /Users/crifanli/.pyenv/versions/3.8.3/bin/python3.8 /Users/crifanli/.pyenv/versions/3.8.3/bin/mitmdump -k -p 8081 -s middleware/Save1.py
-    # crifanli 10982 0.0 0.0 4268032 776 s005 S+ 1:51下午 0:00.00 grep mitmdump
-    # crifanli 10980 0.0 0.0 4278852 1116 s005 S+ 1:51下午 0:00.01 /bin/sh -c ps aux | grep mitmdump
-    # mitmdumpP = "^\s*(?P<username>\w+)\s+(?P<pid>\d+)\s+.+?mitmdump\s+-p\s+(?P<port>\d+)\s+-s\s+(?P<scriptFile>middleware/Save(?P<devId>\d+)\.py)\s*$"
-    mitmdumpP = "^\s*(?P<username>\w+)\s+(?P<pid>\d+)\s+.+?mitmdump\s+(-k\s+)?-p\s+(?P<port>\d+)\s+-s\s+(?P<scriptFile>middleware/Save(?P<devId>\d+)\.py)\s*$"
-    return utils.grepProcessStatus("mitmdump", mitmdumpP)
-
-def startTaskProxy(devId, taskId):
-    logging.info("Start proxy for: devId=%s, taskId=%s", devId, taskId)
-    proxyShellFile = generateRunProxyShell(devId, taskId)
-    logging.debug("proxyShellFile=%s", proxyShellFile)
-    utils.launchTerminalRunShellCommand(proxyShellFile)
-
-#---------- makesure service running ----------
-
-def makesureProxyingRunning(devId, taskId):
-    def checkProxyStatus():
-        isCheckOk, isRunning, infoList = detectMitmdumpStatus()
-        return isCheckOk and isRunning
-
-    def startCurTaskProxy():
-        startTaskProxy(devId, taskId)
-
-    makesureServiceRunning(checkProxyStatus, startCurTaskProxy, "Proxy")
-
 ```
 
-相关的：
+调用到的相关的库函数：
 
 `other/common/libs/utils.py`
 
 ```python
 import re
-
 
 #-------------------------------------------------------------------------------
 # Process
@@ -240,7 +335,6 @@ def runCommand(consoleCommand):
         # "Command 'ffmpeg -y -i /Users/crifan/.../debug/extractAudio/show_112233_video.mp4 -ss 00:00:05.359 -to 00:00:06.763 -b:a 128k /.../show_112233_video_000005359_000006763.mp3 2> /dev/null' returned non-zero exit status 1."
 
     return isRunCmdOk, errMsg
-
 
 def getCommandOutput(consoleCommand, consoleOutputEncoding="utf-8"):
     """
@@ -388,7 +482,6 @@ def grepProcessStatus(processFile, singleLinePattern, psCmd="ps aux"):
     isRunning = bool(processInfoList)
     logging.debug("isRunning=%s, processInfoList=%s", isRunning, processInfoList)
     return isCheckCmdRunOk, isRunning, processInfoList
-
 ```
 
 注：
@@ -401,4 +494,3 @@ def grepProcessStatus(processFile, singleLinePattern, psCmd="ps aux"):
   * `launchTerminalRunShellCommand`
   * `getCommandOutput`
   * `runCommand`
-

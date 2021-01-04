@@ -22,6 +22,26 @@
 * 【已解决】红米Note8Pro中去下载mitmproxy证书提示：if you can see this, traffic is not passing through mitmproxy
 * 【已解决】windows中用PyInstaller打包mitmdump的Python脚本为exe
 * 【已解决】自动抓包平台化：Python调用命令行启动mitmproxy代理
+* 【已解决】用自动处理任务脚本启动自动测试工具测试自动化安卓游戏
+* 【已解决】Mac中用Python检测mitmdump进程状态和杀死原有进程
+* 【已解决】Python中实现检测mitmdump进程服务的状态
+* 【已解决】mitmproxy代理报错：Cannot establish TLS with 443 sni None TlsException Cannot validate certificate hostname without SNI
+* 【无法解决】安卓游戏加了代理后支付页面时mitmdump报错：TlsException SSL handshake error Error SSL routines ssl3_read_bytes sslv3 alert certificate unknown
+* 【未解决】windows中用mitmproxy无法抓包部分http付费链接
+* 【未解决】安卓抓包mitmproxy报错：TlsException SSL handshake Error routines ssl3_get_record wrong version number
+* 【无法解决】Mac中mitmdump通过-s加载python脚本时指定Python版本
+* 【已解决】mac中Python2和Python3都已安装了yaml但mitmdump -s加载python脚本中导入yaml还是报错
+* 【已解决】Mac中让mitmdump解析python脚本不用自己内置Python而是用系统Python
+* 【已解决】Mac中运行mitmdump再次报错：Failed to import yaml
+* 【已解决】Mac中mitmdump运行命令报错：in script py No module named yaml
+* 【已解决】自动化测试安卓游戏烈焰龙城：从主页到带支付的真正支付页面
+* 【已解决】自动化测试安卓游戏烈焰龙城：优化是否是支付页面以及点击支付出现支付弹框的逻辑
+* 【已解决】给VMWare中macOS中抓包项目开启mitmdump代理
+* 【已解决】提取自动抓包工具中的mitmdump自动保存代理抓包出来的url链接保存到文件
 * 
+* [Android Security: SSL Pinning. Using SSL in an Android app is easy… | by Matthew Dolan | Medium](https://medium.com/@appmattus/android-security-ssl-pinning-1db8acb6621e)
+* [Bypassing Certificate Pinning on Android for fun and profit | by Felipe Lima | Medium](https://medium.com/@felipecsl/bypassing-certificate-pinning-on-android-for-fun-and-profit-1b0d14beab2b)
+* [Bypassing SSL Pinning on Android via Reverse Engineering.pdf](https://security-assessment.com/files/documents/whitepapers/Bypassing%20SSL%20Pinning%20on%20Android%20via%20Reverse%20Engineering.pdf)
+* https://dl.packetstormsecurity.net/papers/general/android-sslpinning.pdf
+* [mitmproxy/tls_passthrough.py at master · mitmproxy/mitmproxy](https://github.com/mitmproxy/mitmproxy/blob/master/examples/complex/tls_passthrough.py)
 * [Mitmproxy教程 - zha0gongz1 - 博客园](https://www.cnblogs.com/H4ck3R-XiX/p/12624072.html)
-* 

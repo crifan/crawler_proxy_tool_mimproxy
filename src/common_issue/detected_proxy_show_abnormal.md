@@ -22,6 +22,8 @@
 
 * 【已解决】自动抓包工具适配iOS：安全警告弹框提示该网站的安全证书存在问题
   * ![secureity_warning_cert_file_alert](../assets/img/secureity_warning_cert_file_alert.png)
+* vivo应用市场登录后，偶尔也有同样弹框
+  * ![vivo_proxy_alert_cert_issue](../assets/img/vivo_proxy_alert_cert_issue.jpg)
 
 点击了继续后，后续就不会再提示。
 

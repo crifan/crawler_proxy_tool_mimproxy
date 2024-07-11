@@ -2,7 +2,26 @@
 
 此处整理安卓手机中，安装mitmproxy的根证书，对于不同手机的详细情况：
 
+概述：
+
+* 前提
+  * Mac中的已运行了mitmdump的代理
+    * `mitmdump -k -p 8081 -s saveUrl.py`
+* 步骤
+  * Pixel5中用Chrome浏览器打开链接：
+    * http://mitm.it
+  * 下载得到证书文件：`mitmproxy-ca-cert.cer`
+  * 然后去安装证书文件：
+    * 设置-》安全-》更多安全设置-》加密与凭证-》安装证书-》CA证书-》点选mitmproxy-ca-cert.cer去安装-》正常会提示：已安装CA证书
+
+详见：
+
 * Android
+  * Google
+    * Pixel5
+      * 【已解决】Mac M2 Max中初始化mitmproxy安卓手机Pixel5的抓包环境
+      * 【已解决】安卓手机Pixel5中安装mitmproxy的根证书
+      * 【已解决】安卓手机Pixel5中用证书安装程序安装证书报错：必须在“设置”中安装这个由null提供的证书
   * 华为
     * 荣耀
       * 【记录】给安卓手机中安装mitmproxy代理的SSL证书

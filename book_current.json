@@ -10,10 +10,10 @@
       ]
     },
     "sitemap-general": {
-      "prefix": "https://book.crifan.com/gitbook/crawler_proxy_tool_mimproxy/website/"
+      "prefix": "https://book.crifan.org/books/crawler_proxy_tool_mimproxy/website/"
     },
     "toolbar-button": {
-      "url": "http://book.crifan.com/books/crawler_proxy_tool_mimproxy/pdf/crawler_proxy_tool_mimproxy.pdf"
+      "url": "https://book.crifan.org/books/crawler_proxy_tool_mimproxy/pdf/crawler_proxy_tool_mimproxy.pdf"
     }
   }
 }

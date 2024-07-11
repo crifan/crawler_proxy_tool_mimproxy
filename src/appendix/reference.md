@@ -1,5 +1,7 @@
 # 参考资料
 
+* 【记录】Mac M2 Max中安装mitmproxy
+* 
 * 【已解决】Mac中安装Mitmdump和启动服务
 * 【基本解决】Mac中mitmdump运行命令报错：in script py No module named yaml
 * 【未解决】windows中pip安装mitmproxy报错：  build _openssl.c  error C2065 X509_V_FLAG_CB_ISSUER_CHECK undeclared identifier

@@ -28,13 +28,15 @@
               * 支持协议：`HTTP/1`、`HTTP/2`、`WebSockets`
                 * 产品形态：控制台console中显示交互界面
       * 长什么样=截图
-        * ![mitmproxy_screenshot_demo](../assets/img/mitmproxy_screenshot_demo.jpg)
+        * Mac
+          * ![mitmproxy_mac_cli_gui](../assets/img/mitmproxy_mac_cli_gui.jpg)
     * `mitmweb`：基于命令行的带UI界面
       * 可以理解为：**网页版的mitmproxy**
       * 是什么=一句话描述
         * mitmweb is a web-based interface for mitmproxy
       * 长什么样=截图
-        * ![mitmproxy_mitmweb](../assets/img/mitmproxy_mitmweb.png)
+        * Win
+          * ![mitmproxy_mitmweb](../assets/img/mitmproxy_mitmweb.png)
     * `mitmdump`：命令行版本
       * 是什么=一句话描述
         * mitmdump is the command-line version of mitmproxy. Think tcpdump for HTTP
@@ -44,6 +46,9 @@
             * `tcpdump`之于`HTTP`
       * 可以理解为
         * 命令行版本的`Charles`/`Fiddler`
+      * 效果截图
+        * Mac
+          * ![mitmproxy_screenshot_demo](../assets/img/mitmdup_cli_screenshot_demo.jpg)
 * 主要用途：实现对网页、app的抓包
 * 网址
   * 官网文档

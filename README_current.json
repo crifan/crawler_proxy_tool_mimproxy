@@ -1,6 +1,6 @@
 {
-  "latestVersion": "v1.9.1",
-  "lastUpdate": "20240711",
+  "latestVersion": "v1.9.2",
+  "lastUpdate": "20240714",
   "gitRepoName": "crawler_proxy_tool_mimproxy",
   "bookName": "抓包代理利器：mitmproxy",
   "bookDescription": "介绍主要用于抓包领域的代理工具mitmproxy，尤其是常用的命令行版的mitmdump。先对mitmproxy概述，再介绍mitmdump的下载和安装。包括Mac和Win中如何安装和常见问题。接下来介绍如何使用mitmdump，包括核心的通用逻辑，即先电脑端启动mitmdump代理，再去移动端初始化安装mitmproxy的根证书ssl代理证书文件，其中总结了各种iOS和安卓手机在安装根证书时候的各种坑和问题及解决办法。再去介绍如何给移动端中WiFi去设置代理。总结了常见的问题，比如No module named yaml、if you can see this, traffic is not passing through mitmproxy、Cannot validate certificate hostname without SNI、ssl3_read_bytes sslv3 alert certificate unknown、-s时无法指定python版本、检测到代理显示异常、mitmdump偶尔突然无效、ssl3_get_record wrong version number、SysCallError 10054 WSAECONNRESET等等。还有其他方面，比如用代码控制mitmdump的运行、win中如何给mitmdump的python打包成exe。最后附上mitmdump、mitmproxy和mitmweb的help语法供需要时查阅。"

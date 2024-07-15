@@ -3,7 +3,6 @@
 * 【记录】Mac M2 Max中安装mitmproxy
 * 
 * 【已解决】Mac中安装Mitmdump和启动服务
-* 【基本解决】Mac中mitmdump运行命令报错：in script py No module named yaml
 * 【未解决】windows中pip安装mitmproxy报错：  build _openssl.c  error C2065 X509_V_FLAG_CB_ISSUER_CHECK undeclared identifier
 * 【未解决】windows中pip install mitmproxy失败：ERROR Could not build wheels for cryptography which use PEP 517 and cannot be installed directly
 * 【已解决】iPhone8P中安装mitmproxy的CA的ssl证书
@@ -40,6 +39,7 @@
 * 【已解决】自动化测试安卓游戏烈焰龙城：优化是否是支付页面以及点击支付出现支付弹框的逻辑
 * 【已解决】给VMWare中macOS中抓包项目开启mitmdump代理
 * 【已解决】提取自动抓包工具中的mitmdump自动保存代理抓包出来的url链接保存到文件
+* 【已解决】mitmdump中运行python的script报错：ModuleNotFoundError No module named tldextract
 * 
 * [Android Security: SSL Pinning. Using SSL in an Android app is easy… | by Matthew Dolan | Medium](https://medium.com/@appmattus/android-security-ssl-pinning-1db8acb6621e)
 * [Bypassing Certificate Pinning on Android for fun and profit | by Felipe Lima | Medium](https://medium.com/@felipecsl/bypassing-certificate-pinning-on-android-for-fun-and-profit-1b0d14beab2b)
@@ -47,3 +47,5 @@
 * https://dl.packetstormsecurity.net/papers/general/android-sslpinning.pdf
 * [mitmproxy/tls_passthrough.py at master · mitmproxy/mitmproxy](https://github.com/mitmproxy/mitmproxy/blob/master/examples/complex/tls_passthrough.py)
 * [Mitmproxy教程 - zha0gongz1 - 博客园](https://www.cnblogs.com/H4ck3R-XiX/p/12624072.html)
+* [Installation (mitmproxy.org)](https://docs.mitmproxy.org/stable/overview-installation/#installation-from-the-python-package-index-pypi)
+* 

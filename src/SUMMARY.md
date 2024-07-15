@@ -18,7 +18,7 @@
       * [iOS](mitmdump/usage/mobile_install/ios.md)
       * [Android](mitmdump/usage/mobile_install/android.md)
 * [常见问题](common_issue/README.md)
-  * [No module named yaml](common_issue/no_yaml.md)
+  * [ModuleNotFoundError No module named](common_issue/modulenotfounderror_no_module_named.md)
   * [traffic is not passing through mitmproxy](common_issue/traffic_not_passing_through.md)
   * [Cannot validate certificate hostname without SNI](common_issue/host_without_sni.md)
   * [sslv3 alert certificate unknown](common_issue/sslv3_cert_unknown.md)
